@@ -1,0 +1,49 @@
+---
+- name: verify packages
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+  with_items: "{{ libvirt_packages }}"
+
+- name: Define storage pool
+  virt_pool:
+    command: define
+    name: "{{ storage_pool_name }}"
+    xml: "{{ lookup('template', 'storage_pool.j2') }}"
+
+- name: Start storage pool
+  virt_pool:
+    command: start
+    state: active
+    name: "{{ storage_pool_name }}"
+
+- name: Set autostart storage pool
+  virt_pool:
+    autostart: yes
+    name: "{{ storage_pool_name }}"
+
+- name: Create bridge configuration files
+  blockinfile:
+    path: /etc/network/interfaces.d/br{{ item }}
+    create: yes
+    block: |
+      auto br{{ item }}
+      iface br{{ item }} inet manual
+        bridge_ports vlan{{ item }}
+        bridge_stp off
+        pre-up sleep 2
+        bridge_fd 0
+        bridge_waitport 0
+  loop: "{{ vlan_id }}"
+
+- name: Create vlan configuration files
+  blockinfile:
+    path: /etc/network/interfaces.d/vlan{{ item }}
+    create: yes
+    block: |
+      auto vlan{{ item }}
+      iface vlan{{ item }} inet manual
+        vlan-raw-device {{ vlan_raw_device }}
+        pre-up sleep 2
+  loop: "{{ vlan_id }}"

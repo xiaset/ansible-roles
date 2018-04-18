@@ -1,0 +1,10 @@
+---
+vlan_raw_device: bond0
+libvirt_packages:
+  - qemu-kvm
+  - libvirt-bin
+  - virtinst
+  - bridge-utils
+  - python-libvirt
+  - python-lxml
+vlan_id: []

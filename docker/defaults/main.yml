@@ -1,0 +1,4 @@
+docker_repo_key_url: https://download.docker.com/linux/ubuntu/gpg
+docker_repo_url: https://download.docker.com/linux/ubuntu
+docker_ubuntu_release: xenial
+docker_package: docker-ce

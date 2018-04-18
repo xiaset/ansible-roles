@@ -1,0 +1,25 @@
+options {
+    listen-on           port 53 { any; };
+
+    directory           "{{ bind_var_dir }}";
+    dump-file           "{{ bind_var_dir }}/cache_dump.db";
+    statistics-file     "{{ bind_var_dir }}/data/named_stats.txt";
+    memstatistics-file  "{{ bind_var_dir }}/data/named_mem_stats.txt";
+    version             "DNS Server";
+
+    dnssec-enable       yes;
+    dnssec-validation   yes;
+    dnssec-lookaside    auto;
+
+    recursion           yes;
+{% if bind_allow_query %}
+    allow-query         { {{ bind_allow_query|join('; ') }}; };
+{% endif %}
+{% if bind_allow_transfer %}
+    allow-transfer      { {{ bind_allow_transfer|join('; ') }}; };
+{% endif %}
+{% if bind_allow_notify %}
+    allow-notify        { {{ bind_allow_notify|join('; ') }}; };
+{% endif %}
+};
+

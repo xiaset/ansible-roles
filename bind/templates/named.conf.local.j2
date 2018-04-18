@@ -1,0 +1,7 @@
+{% for zone in bind_zones %}
+zone {{ zone }} {
+  type master;
+  file "{{ bind_zones_dir }}/db.{{zone}}";
+  notify no;
+};
+{% endfor %}

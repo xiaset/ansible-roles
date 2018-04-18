@@ -1,0 +1,15 @@
+bind_conf_dir: /etc/bind
+bind_zones_dir: "{{ bind_conf_dir }}/zones"
+# Requred: absolute path to zone files
+bind_zones_source_dir: ''
+bind_var_dir: /var/cache/bind
+bind_conf_file: "{{ bind_conf_dir }}/named.conf"
+bind_options_file: "{{ bind_conf_dir }}/named.conf.options"
+bind_local_file: "{{ bind_conf_dir }}/named.conf.local"
+# Requred: list of zones that matches to your own zone files
+bind_zones: []
+bind_allow_query: []
+bind_allow_transfer: []
+bind_allow_notify: []
+bind_resolvconf: no
+bind_startup_options: -4 -u bind

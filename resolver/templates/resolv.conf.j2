@@ -1,0 +1,12 @@
+{% for ns in resolver_nameservers %}
+nameserver {{ ns }}
+{% endfor %}
+{% if resolver_search %}
+search {{ resolver_search|join(' ') }}
+{% endif %}
+{% if resolver_domain %}
+domain {{ resolver_domain }}
+{% endif %}
+{% if resolver_options %}
+options {{ resolver_options|join(' ') }}
+{% endif %}

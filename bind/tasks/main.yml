@@ -1,0 +1,48 @@
+---
+- name: Update repositories cache and install "bind" package
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+  loop:
+    - bind9
+    - bind9utils
+
+- name: Ensure zones directory exists
+  file:
+    path: "{{ bind_zones_dir }}"
+    state: directory
+
+- name: Generate /etc/default/bind9 file
+  template:
+    src: bind9.j2
+    dest: /etc/default/bind9
+  notify: restart
+
+- name: Start bind9 service
+  service:
+    name: bind9
+    state: started
+    enabled: yes
+
+- name: Copy zone files
+  copy:
+    src: "{{ bind_zones_source_dir }}/db.{{ item }}"
+    dest: "{{ bind_zones_dir }}/db.{{ item }}"
+    owner: root
+    group: bind
+    mode: 0644
+  loop: "{{ bind_zones }}"
+  when: bind_zones is defined
+  notify: reload
+
+- name: Generate named.conf.local file
+  template:
+    src: named.conf.local.j2
+    dest: "{{ bind_conf_dir }}/named.conf.local"
+  notify: reload
+
+- name: Generate named.conf.options file
+  template:
+    src: named.conf.options.j2
+    dest: "{{ bind_conf_dir }}/named.conf.options"
+  notify: reload

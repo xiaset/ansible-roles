@@ -1,0 +1,4 @@
+hostname: localhost
+dns_domain: localdomain
+deploy_user: deploy
+ansible_host_key_path: ~/.ssh/id_rsa.pub

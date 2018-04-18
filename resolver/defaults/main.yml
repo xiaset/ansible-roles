@@ -1,0 +1,8 @@
+resolver_nameservers:
+  - 8.8.8.8
+  - 8.8.4.4
+resolver_domain: localdomain
+resolver_search: ""
+resolver_options:
+  - "rotate"
+  - "timeout:2"
