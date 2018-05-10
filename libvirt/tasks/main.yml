@@ -47,3 +47,33 @@
         vlan-raw-device {{ vlan_raw_device }}
         pre-up sleep 2
   loop: "{{ vlan_id }}"
+
+- name: Set net.ipv4.ip_forward
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: 1
+#    sysctl_file: /etc/sysctl.d/libvirt.conf
+
+- name: Set net.bridge.bridge-nf-call-ip6tables
+  sysctl:
+    name: net.bridge.bridge-nf-call-ip6tables
+    value: 0
+#    sysctl_file: /etc/sysctl.d/libvirt.conf
+
+- name: Set net.bridge.bridge-nf-call-iptables
+  sysctl:
+    name: net.bridge.bridge-nf-call-iptables
+    value: 0
+#    sysctl_file: /etc/sysctl.d/libvirt.conf
+
+- name: Set net.bridge.bridge-nf-call-arptables
+  sysctl:
+    name: net.bridge.bridge-nf-call-arptables
+    value: 0
+#    sysctl_file: /etc/sysctl.d/libvirt.conf
+
+- name: Set net.bridge.bridge-nf-filter-vlan-tagged
+  sysctl:
+    name: net.bridge.bridge-nf-filter-vlan-tagged
+    value: 0
+#    sysctl_file: /etc/sysctl.d/libvirt.conf
