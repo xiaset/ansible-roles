@@ -23,6 +23,16 @@
     autostart: yes
     name: "{{ storage_pool_name }}"
 
+- name: Destroy default bridge
+  virt_net:
+    state: inactive
+    name: default
+
+- name: Undefine default bridge
+  virt_net:
+    state: absent
+    name: default
+
 - name: Create bridge configuration files
   blockinfile:
     path: /etc/network/interfaces.d/br{{ item }}
@@ -47,6 +57,19 @@
         vlan-raw-device {{ vlan_raw_device }}
         pre-up sleep 2
   loop: "{{ vlan_id }}"
+
+- name: Add br_netfilter module
+  copy:
+    dest: /etc/modules-load.d/bridge.conf
+    content: br_netfilter 
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Load br_netfilter module
+  modprobe:
+    name: br_netfilter
+    state: present
 
 - name: Set net.ipv4.ip_forward
   sysctl:
