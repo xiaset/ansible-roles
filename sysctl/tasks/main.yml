@@ -1,0 +1,6 @@
+- sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    sysctl_file: "{{ sysctl_conf_file }}"
+  loop: "{{ query('dict', sysctl_params|default({})) }}"
+  when: sysctl_params is defined
