@@ -1,1 +1,2 @@
 sysctl_conf_file: /etc/sysctl.d/99-ansible.conf
+sysctl_params: {}
