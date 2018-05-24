@@ -1,0 +1,15 @@
+---
+- import_tasks: create_lv.yml
+  when: docker_registry_create_lv
+
+- name: Pull {{ docker_registry_image }} Docker image
+  docker_image:
+    name: "{{ docker_registry_image }}"
+
+- name: Run {{ docker_registry_image }} container
+  docker_container:
+    name: "{{ docker_registry_container_name }}"
+    image: "{{ docker_registry_image }}"
+    restart_policy: always
+    network_mode: host
+    volumes: "{{ docker_registry_volumes }}"

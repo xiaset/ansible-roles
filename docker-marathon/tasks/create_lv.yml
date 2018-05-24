@@ -1,0 +1,32 @@
+---
+- name: Create logical volume
+  lvol:
+    vg: "{{ docker_mesos_master_vg_name | default('shared') }}"
+    lv: "{{ docker_mesos_master_lv_name }}"
+    size: "{{ docker_mesos_master_lv_size }}"
+
+- name: mkfs
+  filesystem:
+    dev: /dev/{{ docker_mesos_master_vg_name | default('shared') }}/{{ docker_mesos_master_lv_name }}
+    fstype: "{{ docker_mesos_master_fstype }}"
+
+- name: Create mountpoint
+  file:
+    path: "{{ docker_mesos_master_mount_path }}"
+    state: directory
+
+- name: Mount logical volume
+  mount:
+    src: /dev/{{ docker_mesos_master_vg_name | default('shared') }}/{{ docker_mesos_master_lv_name }}
+    path: "{{ docker_mesos_master_mount_path }}"
+    fstype: "{{ docker_mesos_master_fstype }}"
+    opts: noatime
+    state: mounted
+
+- name: Set mountpoint attributes
+  file:
+    path: "{{ docker_mesos_master_mount_path }}"
+    state: directory
+    owner: "{{ docker_mesos_master_owner }}"
+    group: "{{ docker_mesos_master_group }}"
+    mode: "{{ docker_mesos_master_mode }}"

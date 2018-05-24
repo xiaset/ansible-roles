@@ -1,3 +1,13 @@
+---
+- import_tasks: create_lv.yml
+  when: docker_create_lv
+
+- name: Install depended packages
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+
 - name: Add Docker repo key
   apt_key:
     url: "{{ docker_repo_key_url }}"
@@ -8,9 +18,32 @@
     repo: deb [arch=amd64] {{ docker_repo_url }} {{ docker_ubuntu_release }} stable
     state: present
     filename: docker
+  notify:
+    - update caches
 
-- name: Install Docker
+- meta: flush_handlers
+
+- name: Install Docker packages
   apt:
-    name: "{{ docker_package }}"
+    name: "{{ item }}"
     state: present
-    update_cache: yes
+#    update_cache: yes
+  loop: "{{ docker_packages }}"
+
+- name: Ensure daemon.json file exists
+  copy:
+    content: ""
+    dest: /etc/docker/daemon.json
+    force: no
+    group: root
+    owner: root
+    mode: 0640
+  when: docker_insecure_registries is defined
+
+- name: Enable insecure registries
+  lineinfile:
+    path: /etc/docker/daemon.json
+#    regexp: '^{ "insecure-registries":["{{ item }}"] }.+$'
+    line: "{{ docker_insecure_registries | to_json }}"
+  when: docker_insecure_registries is defined
+  notify: docker configuration changed

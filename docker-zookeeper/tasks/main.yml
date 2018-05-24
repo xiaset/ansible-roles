@@ -1,0 +1,34 @@
+---
+- import_tasks: create_lv.yml
+  when: docker_zookeeper_create_lv
+
+- name: Create zookeeper data directory
+  file:
+    path: "{{ docker_zookeeper_mount_path }}/data"
+    state: directory
+    owner: "{{ docker_zookeeper_owner }}"
+    group: "{{ docker_zookeeper_group }}"
+
+- name: Create zookeeper datalog directory
+  file:
+    path: "{{ docker_zookeeper_mount_path }}/datalog"
+    state: directory
+    owner: "{{ docker_zookeeper_owner }}"
+    group: "{{ docker_zookeeper_group }}"
+    mode: "{{ docker_zookeeper_mode }}"
+
+- name: Pull zookeeper Docker image
+  docker_image:
+    name: "{{ docker_zookeeper_image }}"
+
+- name: Run zookeeper container
+  docker_container:
+    name: zookeeper{{ zoo_id | default('0') }}
+    image: "{{ docker_zookeeper_image }}"
+    restart_policy: always
+    network_mode: host
+    volumes: "{{ docker_zookeeper_volumes }}"
+    env:
+      ZOO_MY_ID: "{{ zoo_id | default('0') }}"
+      ZOO_SERVERS: "{{ docker_zookeeper_servers }}"
+

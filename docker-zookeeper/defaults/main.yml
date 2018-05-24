@@ -1,0 +1,16 @@
+docker_zookeeper_create_lv: False
+docker_zookeeper_vg_name: somevg
+docker_zookeeper_lv_name: docker-zookeeper
+docker_zookeeper_lv_size: 1G
+docker_zookeeper_fstype: ext4
+docker_zookeeper_owner: root
+docker_zookeeper_group: root
+docker_zookeeper_mode: 0755
+docker_zookeeper_image: zookeeper
+docker_zookeeper_container_name: zookeeper
+docker_zookeeper_mount_path: /opt/docker-zookeeper
+#docker_zookeeper_zoo_id: 0
+docker_zookeeper_servers: server.1=zoo01:2888:3888 server.2=zoo02:2888:3888 server.3=zoo03:2888:3888
+docker_zookeeper_volumes:
+  - "{{ docker_zookeeper_mount_path }}/data:/data"
+  - "{{ docker_zookeeper_mount_path }}/datalog:/datalog"

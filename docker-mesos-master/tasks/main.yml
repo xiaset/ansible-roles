@@ -1,0 +1,22 @@
+---
+- import_tasks: create_lv.yml
+  when: docker_mesos_master_create_lv
+
+- name: Pull mesos-master Docker image
+  docker_image:
+    name: "{{ docker_mesos_master_image }}"
+
+- name: Run mesos-master container
+  docker_container:
+    name: "{{ docker_mesos_master_container_name }}"
+    image: "{{ docker_mesos_master_image }}"
+    restart_policy: always
+    network_mode: host
+    entrypoint: mesos-master
+    volumes: "{{ docker_mesos_master_volumes }}"
+    env:
+      MESOS_CLUSTER: "{{ docker_mesos_master_cluster }}"
+      MESOS_ZK: "{{ docker_mesos_master_zk }}"
+      MESOS_QUORUM: "{{ docker_mesos_master_quorum }}"
+      MESOS_WORK_DIR: "{{ docker_mesos_master_mount_path }}"
+      MESOS_LOG_DIR: "{{ docker_mesos_master_mount_path }}"

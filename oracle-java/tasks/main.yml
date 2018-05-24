@@ -1,0 +1,22 @@
+- name: Add Java PPA repository
+  apt_repository:
+    repo: "{{ oracle_java_ppa }}"
+    validate_certs: false
+  notify:
+    - update caches
+
+- meta: flush_handlers
+
+- name: Accept Oracle License
+  debconf:
+    name: "{{ oracle_java_package_name }}"
+    question: 'shared/accepted-oracle-license-v1-1'
+    value: 'true'
+    vtype: 'select'
+
+- name: Install Java
+  apt:
+    name: "{{ oracle_java_package_name }}"
+    state: present
+    force: yes
+

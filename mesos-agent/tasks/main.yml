@@ -1,0 +1,46 @@
+---
+- import_tasks: create_lv.yml
+  when: mesos_agent_create_lv
+
+- name: Add repo key
+  apt_key:
+    id: E56151BF
+    keyserver: keyserver.ubuntu.com
+
+- name: Add mesosphere repository
+  apt_repository:
+    repo: deb http://repos.mesosphere.io/ubuntu/ xenial main
+    state: present
+    filename: mesosphere
+  notify: update caches
+
+- meta: flush_handlers
+
+- name: Install Mesos package
+  apt:
+    name: mesos={{ mesos_agent_version }}
+
+#- name: Configure Mesos agent
+#  template:
+#    src: mesos-slave.j2
+#    dest: /etc/default/mesos-slave
+#  notify: configuration changed
+
+- name: Truncate /etc/default/mesos-slave
+  copy:
+    dest: /etc/default/mesos-slave
+    content: ""
+  notify: configuration changed
+
+- name: Configure Mesos agent
+  copy:
+    dest: /etc/mesos-slave/{{ item.key }}
+    content: "{{ item.value }}"
+  loop: "{{ query('dict', mesos_agent_options|default({})) }}"
+  notify: configuration changed
+
+- name: Start Mesos agent service
+  systemd:
+    name: mesos-slave
+    enabled: yes
+    state: started

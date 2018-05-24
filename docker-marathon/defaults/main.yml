@@ -1,0 +1,5 @@
+docker_marathon_create_lv: False
+docker_marathon_image: mesosphere/marathon
+docker_marathon_container_name: marathon
+docker_marathon_master: local
+docker_marathon_zk: zk://localhost:2181/marathon

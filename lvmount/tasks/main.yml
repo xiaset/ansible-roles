@@ -1,0 +1,34 @@
+---
+- name: Create logical volume
+  lvol:
+    vg: "{{ lvmount.vg_name | default('shared') }}"
+    lv: "{{ lvmount.lv_name }}"
+    size: "{{ lvmount.lv_size }}"
+  notify: mkfs
+
+#- meta: flush_handlers
+- name: mkfs
+  filesystem:
+    dev: /dev/{{ lvmount.vg_name | default('shared') }}/{{ lvmount.lv_name }}
+    fstype: "{{ lvmount.fstype }}"
+
+- name: Create mountpoint
+  file:
+    path: "{{ lvmount.mount_path }}"
+    state: directory
+
+- name: Mount logical volume
+  mount:
+    src: /dev/{{ lvmount.vg_name | default('shared') }}/{{ lvmount.lv_name }}
+    path: "{{ lvmount.mount_path }}"
+    fstype: "{{ lvmount.fstype }}"
+    opts: noatime
+    state: mounted
+
+- name: Set mountpoint attributes
+  file:
+    path: "{{ lvmount.mount_path }}"
+    state: directory
+    owner: "{{ lvmount.owner }}"
+    group: "{{ lvmount.group }}"
+    mode: "{{ lvmount.mode }}"

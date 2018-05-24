@@ -1,0 +1,13 @@
+docker_registry_create_lv: False
+docker_registry_vg_name: somevg
+docker_registry_lv_name: docker-registry
+docker_registry_lv_size: 20G
+docker_registry_fstype: ext4
+docker_registry_owner: root
+docker_registry_group: root
+docker_registry_mode: 0755
+docker_registry_image: registry
+docker_registry_container_name: docker-registry
+docker_registry_mount_path: /opt/docker-registry
+docker_registry_volumes:
+  - "{{ docker_registry_mount_path }}:/var/liv/registry"

@@ -1,0 +1,16 @@
+docker_mesos_master_create_lv: False
+docker_mesos_master_vg_name: somevg
+docker_mesos_master_lv_name: docker-mesos-master
+docker_mesos_master_lv_size: 3G
+docker_mesos_master_fstype: ext4
+docker_mesos_master_owner: root
+docker_mesos_master_group: root
+docker_mesos_master_mode: 0755
+docker_mesos_master_image: mesosphere/mesos
+docker_mesos_master_container_name: mesos-master
+docker_mesos_master_mount_path: /opt/docker-mesos-master
+docker_mesos_master_cluster: mesos-cluster
+docker_mesos_master_zk: zk://localhost:2181/mesos
+docker_mesos_master_quorum: 1
+docker_mesos_master_volumes:
+  - "{{ docker_mesos_master_mount_path }}:{{ docker_mesos_master_mount_path }}"

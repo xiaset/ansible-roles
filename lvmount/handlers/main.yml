@@ -1,0 +1,6 @@
+---
+- name: mkfs
+  filesystem:
+    dev: /dev/{{ lvmount_vg_name }}/{{ lvmount_lv_name }}
+    fstype: "{{ lvmount_fstype }}"
+

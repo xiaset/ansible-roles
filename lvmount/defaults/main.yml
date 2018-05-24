@@ -1,0 +1,9 @@
+#lvmount:
+#  vg_name: shared
+#  lv_name: default
+#  lv_size: 1G
+#  mount_path: /mnt/somepath
+#  fstype: ext4
+#  owner: somesuer
+#  group: somegroup
+#  mode: 0755

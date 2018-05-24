@@ -1,0 +1,32 @@
+---
+- name: Create logical volume
+  lvol:
+    vg: "{{ docker_registry_vg_name | default('shared') }}"
+    lv: "{{ docker_registry_lv_name }}"
+    size: "{{ docker_registry_lv_size }}"
+
+- name: mkfs
+  filesystem:
+    dev: /dev/{{ docker_registry_vg_name | default('shared') }}/{{ docker_registry_lv_name }}
+    fstype: "{{ docker_registry_fstype }}"
+
+- name: Create mountpoint
+  file:
+    path: "{{ docker_registry_mount_path }}"
+    state: directory
+
+- name: Mount logical volume
+  mount:
+    src: /dev/{{ docker_registry_vg_name | default('shared') }}/{{ docker_registry_lv_name }}
+    path: "{{ docker_registry_mount_path }}"
+    fstype: "{{ docker_registry_fstype }}"
+    opts: noatime
+    state: mounted
+
+- name: Set mountpoint attributes
+  file:
+    path: "{{ docker_registry_mount_path }}"
+    state: directory
+    owner: "{{ docker_registry_owner }}"
+    group: "{{ docker_registry_group }}"
+    mode: "{{ docker_registry_mode }}"

@@ -1,4 +1,17 @@
+docker_create_lv: False
+docker_vg_name: shared
+docker_lv_name: docker
+docker_lv_size: 5G
+docker_fstype: ext4
+docker_mount_path: /var/lib/docker
+docker_owner: root
+docker_group: root
+docker_mode: 0711
+
 docker_repo_key_url: https://download.docker.com/linux/ubuntu/gpg
 docker_repo_url: https://download.docker.com/linux/ubuntu
 docker_ubuntu_release: xenial
-docker_package: docker-ce
+docker_packages:
+  - docker-ce
+  - docker-compose
+docker_insecure_registries: []

@@ -1,0 +1,32 @@
+---
+- name: Create logical volume
+  lvol:
+    vg: "{{ mesos_agent_vg_name | default('shared') }}"
+    lv: "{{ mesos_agent_lv_name }}"
+    size: "{{ mesos_agent_lv_size }}"
+
+- name: mkfs
+  filesystem:
+    dev: /dev/{{ mesos_agent_vg_name | default('shared') }}/{{ mesos_agent_lv_name }}
+    fstype: "{{ mesos_agent_fstype }}"
+
+- name: Create mountpoint
+  file:
+    path: "{{ mesos_agent_mount_path }}"
+    state: directory
+
+- name: Mount logical volume
+  mount:
+    src: /dev/{{ mesos_agent_vg_name | default('shared') }}/{{ mesos_agent_lv_name }}
+    path: "{{ mesos_agent_mount_path }}"
+    fstype: "{{ mesos_agent_fstype }}"
+    opts: noatime
+    state: mounted
+
+- name: Set mountpoint attributes
+  file:
+    path: "{{ mesos_agent_mount_path }}"
+    state: directory
+    owner: "{{ mesos_agent_owner }}"
+    group: "{{ mesos_agent_group }}"
+    mode: "{{ mesos_agent_mode }}"
