@@ -1,0 +1,32 @@
+---
+- name: Create logical volume
+  lvol:
+    vg: "{{ postgresql_vg_name | default('shared') }}"
+    lv: "{{ postgresql_lv_name }}"
+    size: "{{ postgresql_lv_size }}"
+
+- name: mkfs
+  filesystem:
+    dev: /dev/{{ postgresql_vg_name | default('shared') }}/{{ postgresql_lv_name }}
+    fstype: "{{ postgresql_fstype }}"
+
+- name: Create mountpoint
+  file:
+    path: "{{ postgresql_mount_path }}"
+    state: directory
+
+- name: Mount logical volume
+  mount:
+    src: /dev/{{ postgresql_vg_name | default('shared') }}/{{ postgresql_lv_name }}
+    path: "{{ postgresql_mount_path }}"
+    fstype: "{{ postgresql_fstype }}"
+    opts: noatime
+    state: mounted
+
+- name: Set mountpoint attributes
+  file:
+    path: "{{ postgresql_mount_path }}"
+    state: directory
+    owner: "{{ postgresql_owner }}"
+    group: "{{ postgresql_group }}"
+    mode: "{{ postgresql_mode }}"

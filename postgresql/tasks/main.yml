@@ -1,0 +1,31 @@
+---
+- import_tasks: create_lv.yml
+  when: postgresql_create_lv
+
+- name: Install depended packages
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+
+- name: Add PostgreSQL repo key
+  apt_key:
+    url: "{{ postgresql_repo_key_url }}"
+    state: present
+
+- name: Add Docker repo
+  apt_repository:
+    repo: deb {{ postgresql_repo_url }} {{ postgresql_ubuntu_release }}-pgdg main
+    state: present
+    filename: pgdg
+  notify:
+    - update caches
+
+- meta: flush_handlers
+
+- name: Install PostgreSQL packages
+  apt:
+    name: "{{ item }}"
+    state: present
+#    update_cache: yes
+  loop: "{{ postgresql_packages }}"
