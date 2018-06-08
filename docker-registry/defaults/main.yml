@@ -10,4 +10,4 @@ docker_registry_image: registry
 docker_registry_container_name: docker-registry
 docker_registry_mount_path: /opt/docker-registry
 docker_registry_volumes:
-  - "{{ docker_registry_mount_path }}:/var/liv/registry"
+  - "{{ docker_registry_mount_path }}:/var/lib/registry"

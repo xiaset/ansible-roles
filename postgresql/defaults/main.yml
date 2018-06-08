@@ -1,17 +1,37 @@
 postgresql_create_lv: False
+postgresql_init_standby: False
 postgresql_vg_name: shared
 postgresql_lv_name: postgresql
 postgresql_lv_size: 5G
 postgresql_fstype: ext4
 postgresql_mount_path: /var/lib/postgresql
-postgresql_owner: root
-postgresql_group: root
-postgresql_mode: 0755
+postgresql_owner: postgres
+postgresql_group: postgres
+postgresql_mode: 0750
+postgresql_version: 9.6
+postgresql_data_dir: "{{ postgresql_mount_path }}/{{ postgresql_version }}/main"
+
+
+postgresql_primary_host: ''
+postgresql_standby_host: ''
 
 postgresql_ubuntu_release: xenial
 postgresql_packages:
-#  - postgresql
+  - postgresql-{{ postgresql_version }}
 
 postgresql_repo_key_url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
 postgresql_repo_url: http://apt.postgresql.org/pub/repos/apt/
 
+postgresql_options:
+  listen_addresses: "'{{ ansible_default_ipv4.address }}'"
+#  wal_level: hot_standby
+#  synchronous_commit: on
+#  max_wal_senders: 5
+#  wal_keep_segments: 16
+#  synchronous_standby_names: "''"
+#  hot_standby: on
+postgresql_hba:
+  - { "type" : "", "database" : "", "user" : "", "address" : "", "method" : "" }
+
+postgresql_recovery:
+  standby_mode: on

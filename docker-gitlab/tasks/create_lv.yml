@@ -1,0 +1,32 @@
+---
+- name: Create logical volume
+  lvol:
+    vg: "{{ docker_gitlab_vg_name | default('shared') }}"
+    lv: "{{ docker_gitlab_lv_name }}"
+    size: "{{ docker_gitlab_lv_size }}"
+
+- name: mkfs
+  filesystem:
+    dev: /dev/{{ docker_gitlab_vg_name | default('shared') }}/{{ docker_gitlab_lv_name }}
+    fstype: "{{ docker_gitlab_fstype }}"
+
+- name: Create mountpoint
+  file:
+    path: "{{ docker_gitlab_mount_path }}"
+    state: directory
+
+- name: Mount logical volume
+  mount:
+    src: /dev/{{ docker_gitlab_vg_name | default('shared') }}/{{ docker_gitlab_lv_name }}
+    path: "{{ docker_gitlab_mount_path }}"
+    fstype: "{{ docker_gitlab_fstype }}"
+    opts: noatime
+    state: mounted
+
+- name: Set mountpoint attributes
+  file:
+    path: "{{ docker_gitlab_mount_path }}"
+    state: directory
+    owner: "{{ docker_gitlab_owner }}"
+    group: "{{ docker_gitlab_group }}"
+    mode: "{{ docker_gitlab_mode }}"

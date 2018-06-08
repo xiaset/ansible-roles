@@ -29,3 +29,23 @@
     state: present
 #    update_cache: yes
   loop: "{{ postgresql_packages }}"
+
+- name: Configure postgresql.conf
+  lineinfile:
+    path: /etc/postgresql/{{ postgresql_version }}/main/postgresql.conf
+    regexp: "^{{ item.key }} .+$"
+    line: "{{ item.key }} = {{ item.value }}"
+  loop: "{{ query('dict', postgresql_options | default({})) }}"
+
+- name: Configure pg_hba.conf
+  lineinfile:
+    path: /etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf
+    line: "{{ item.type }}\t{{ item.database }}\t{{ item.user }}\t{{ item.address }}\t{{ item.method }}"
+  loop: "{{ postgresql_hba }}"
+
+- pause:
+    prompt: "Make sure primary db replication settings accepted. Restart primary db service if needed"
+  when: postgresql_init_standby
+
+- import_tasks: init_standby.yml
+  when: postgresql_init_standby and postgresql_standby_host == ansible_default_ipv4.address

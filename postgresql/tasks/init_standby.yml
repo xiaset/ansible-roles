@@ -1,0 +1,41 @@
+- name: Stop postgresql service
+  service:
+    name: postgresql
+    state: stopped
+
+- name: Clean data dir
+  file:
+    path: "{{ postgresql_data_dir }}"
+    state: absent
+
+- name: Start pg_basebackup
+  command: /usr/bin/pg_basebackup -D {{ postgresql_data_dir }} -U postgres -h {{ postgresql_primary_host }}
+
+- name: Set attributes
+  file:
+    path: "{{ postgresql_data_dir }}"
+    owner: postgres
+    group: postgres
+    recurse: yes
+
+- name: Empty recovery.conf
+  copy:
+    content: ""
+    dest: /var/lib/postgresql/{{ postgresql_version }}/main/recovery.conf
+    force: no
+    group: postgres
+    owner: postgres
+    mode: 0640
+
+- name: Configure recovery.conf
+  lineinfile:
+    path:  /var/lib/postgresql/{{ postgresql_version }}/main/recovery.conf
+    regexp: "^{{ item.key }}.+$"
+    line: "{{ item.key }} = {{ item.value }}"
+  loop: "{{ query('dict', postgresql_recovery | default({})) }}"
+
+- name: Start postgresql service
+  service:
+    name: postgresql
+    state: started 
+

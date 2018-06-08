@@ -1,0 +1,39 @@
+---
+- import_tasks: create_lv.yml
+  when: docker_gitlab_create_lv
+
+- name: Pull {{ docker_gitlab_image }} Docker image
+  docker_image:
+    name: "{{ docker_gitlab_image }}"
+
+- name: Check config directory
+  file:
+    path: "{{ docker_gitlab_mount_path }}/config"
+    state: directory
+    owner: "{{ docker_gitlab_owner }}"
+    group: "{{ docker_gitlab_group }}"
+    mode: "{{ docker_gitlab_mode }}"
+
+- name: Check logs directory
+  file:
+    path: "{{ docker_gitlab_mount_path }}/logs"
+    state: directory
+    owner: "{{ docker_gitlab_owner }}"
+    group: "{{ docker_gitlab_group }}"
+    mode: "{{ docker_gitlab_mode }}"
+
+- name: Check data directory
+  file:
+    path: "{{ docker_gitlab_mount_path }}/data"
+    state: directory
+    owner: "{{ docker_gitlab_owner }}"
+    group: "{{ docker_gitlab_group }}"
+    mode: "{{ docker_gitlab_mode }}"
+
+- name: Run {{ docker_gitlab_image }} container
+  docker_container:
+    name: "{{ docker_gitlab_container_name }}"
+    image: "{{ docker_gitlab_image }}"
+    restart_policy: always
+    network_mode: host
+    volumes: "{{ docker_gitlab_volumes }}"

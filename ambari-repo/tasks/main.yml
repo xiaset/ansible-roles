@@ -1,0 +1,30 @@
+---
+
+- name: Add repo key
+  apt_key:
+    id: B9733A7A07513CAD
+    keyserver: keyserver.ubuntu.com
+
+- name: Add Ambari repository
+  apt_repository:
+    repo: deb {{ ambari_repo_url }} Ambari main
+    state: present
+    filename: ambari
+  notify: update caches
+
+- name: Add HDP repository
+  apt_repository:
+    repo: deb {{ ambari_hdp_repo_url }} HDP main
+    state: present
+    filename: ambari-hdp
+  notify: update caches
+
+- name: Add HDP-utils repository
+  apt_repository:
+    repo: deb {{ ambari_hdp_utils_repo_url }} HDP-UTILS main
+    state: present
+    filename: ambari-hdp-utils
+  notify: update caches
+
+- meta: flush_handlers
+

@@ -1,0 +1,7 @@
+- pam_limits:
+    domain: "{{ item.domain }}"
+    limit_type: "{{ item.type }}"
+    limit_item: "{{ item.item }}"
+    value: "{{ item.value }}"
+  loop: "{{ ulimit_params }}"
+  when: ulimit_params is defined
