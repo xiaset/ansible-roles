@@ -1,0 +1,20 @@
+---
+- name: Add repository
+  apt_repository:
+    repo: deb http://hwraid.le-vert.net/{{ ansible_distribution | lower}} {{ ansible_distribution_release }} main
+    state: present
+    filename: 'megaraid'
+
+- name: Add an apt hwraid.le-vert.net signing key
+  apt_key:
+    url: https://hwraid.le-vert.net/{{ ansible_distribution | lower}}/hwraid.le-vert.net.gpg.key
+    state: present
+  notify:
+    - update caches
+
+- meta: flush_handlers
+
+- name: Install megaraid packages
+  apt:
+    name: "{{ item }}"
+  loop: "{{ megaraid_packages }}"

@@ -1,0 +1,5 @@
+megaraid_packages:
+  - megaclisas-status
+  - megacli
+  - megaraid-status
+  - megactl
