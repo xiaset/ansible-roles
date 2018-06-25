@@ -8,6 +8,7 @@ bind_options_file: "{{ bind_conf_dir }}/named.conf.options"
 bind_local_file: "{{ bind_conf_dir }}/named.conf.local"
 # Requred: list of zones that matches to your own zone files
 bind_zones: []
+bind_zones_forward: []
 bind_allow_query: []
 bind_allow_transfer: []
 bind_allow_notify: []

@@ -5,3 +5,10 @@ zone {{ zone }} {
   notify no;
 };
 {% endfor %}
+
+{% for zone in bind_zones_forward %}
+zone {{ zone.name }} {
+  type forward;
+  forwarders { {{ zone.forwarders | join("; ") }}; };
+};
+{% endfor %}

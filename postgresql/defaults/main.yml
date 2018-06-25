@@ -5,8 +5,8 @@ postgresql_lv_name: postgresql
 postgresql_lv_size: 5G
 postgresql_fstype: ext4
 postgresql_mount_path: /var/lib/postgresql
-postgresql_owner: postgres
-postgresql_group: postgres
+postgresql_owner: root
+postgresql_group: root
 postgresql_mode: 0750
 postgresql_version: 9.6
 postgresql_data_dir: "{{ postgresql_mount_path }}/{{ postgresql_version }}/main"

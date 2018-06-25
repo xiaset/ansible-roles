@@ -23,10 +23,10 @@
     opts: noatime
     state: mounted
 
-- name: Set mountpoint attributes
-  file:
-    path: "{{ postgresql_mount_path }}"
-    state: directory
-    owner: "{{ postgresql_owner }}"
-    group: "{{ postgresql_group }}"
-    mode: "{{ postgresql_mode }}"
+#- name: Set mountpoint attributes
+#  file:
+#    path: "{{ postgresql_mount_path }}"
+#    state: directory
+#    owner: "{{ postgresql_owner }}"
+#    group: "{{ postgresql_group }}"
+#    mode: "{{ postgresql_mode }}"
