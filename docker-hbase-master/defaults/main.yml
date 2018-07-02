@@ -1,0 +1,3 @@
+docker_hbase_master_image: hbase-master
+docker_hbase_master_container_name: hbase-master
+docker_hbase_env: {}

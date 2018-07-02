@@ -1,0 +1,3 @@
+docker_hbase_phoenix_image: hbase-phoenix
+docker_hbase_phoenix_container_name: hbase-phoenix
+docker_hbase_env: {}

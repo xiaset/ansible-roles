@@ -1,0 +1,15 @@
+---
+- name: Pull hbase Docker image ({{ docker_hbase_master_image }})
+  docker_image:
+    name: "{{ docker_hbase_master_image }}"
+    force: yes
+
+- name: Run hbase container
+  docker_container:
+    name: "{{ docker_hbase_master_container_name }}"
+    image: "{{ docker_hbase_master_image }}"
+    restart_policy: always
+    network_mode: host
+    user: hbase
+#    command: sleep 9000
+    env: "{{ docker_hbase_env }}"

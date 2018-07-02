@@ -1,0 +1,5 @@
+zabbix_version: 2.4
+zabbix_repo_key_url: http://repo.zabbix.com/zabbix-official-repo.key
+zabbix_repo_url: http://repo.zabbix.com/zabbix/{{ zabbix_version }}/ubuntu
+zabbix_ubuntu_release: xenial
+zabbix_packages: []

@@ -1,0 +1,28 @@
+---
+#- name: Install depended packages
+#  apt:
+#    name: apt-transport-https
+#    state: present
+#    update_cache: yes
+
+- name: Add Zabbix repo key
+  apt_key:
+    url: "{{ zabbix_repo_key_url }}"
+    state: present
+
+- name: Add Zabbix repo
+  apt_repository:
+    repo: deb {{ zabbix_repo_url }} {{ zabbix_ubuntu_release }} main
+    state: present
+    filename: zabbix
+  notify:
+    - update caches
+
+- meta: flush_handlers
+
+#- name: Install Zabbix packages
+#  apt:
+#    name: "{{ item }}"
+#    state: present
+#    update_cache: yes
+#  loop: "{{ zabbix_packages }}"

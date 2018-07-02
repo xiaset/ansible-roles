@@ -1,0 +1,3 @@
+docker_hbase_regionserver_image: hbase-regionserver
+docker_hbase_regionserver_container_name: hbase-regionserver
+docker_hbase_env: {}
