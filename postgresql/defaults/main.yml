@@ -9,7 +9,8 @@ postgresql_owner: root
 postgresql_group: root
 postgresql_mode: 0750
 postgresql_version: 9.6
-postgresql_data_dir: "{{ postgresql_mount_path }}/{{ postgresql_version }}/main"
+postgresql_cluster_name: main
+postgresql_data_dir: "{{ postgresql_mount_path }}/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
 
 
 postgresql_primary_host: ''

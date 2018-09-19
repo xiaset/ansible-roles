@@ -1,0 +1,10 @@
+postgresql_barman_address: ''
+postgresql_barman_user: barman
+postgresql_barman_path: /var/lib/barman
+postgresql_cluster_name: main
+postgresql_barman_server_name: "{{ ansible_nodename }}"
+postgresql_barman_options:
+  archive_mode: on
+  archive_command: "'rsync -e \"ssh -o StrictHostKeyChecking=no\" -a %p {{ postgresql_barman_user }}@{{ postgresql_barman_address }}:{{ postgresql_barman_path }}/{{ postgresql_barman_server_name }}/incoming/%f'"
+
+postgresql_barman_hba: []

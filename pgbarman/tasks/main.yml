@@ -1,0 +1,67 @@
+---
+- import_tasks: create_lv.yml
+  when: pgbarman_create_lv
+
+- name: Install depended packages
+  apt:
+    name: apt-transport-https
+    state: present
+    update_cache: yes
+
+- name: Add PostgreSQL Community repo key
+  apt_key:
+    url: "{{ pgbarman_repo_key_url }}"
+    state: present
+
+- name: Add PostgreSQL Community repo
+  apt_repository:
+    repo: deb {{ pgbarman_repo_url }} {{ pgbarman_ubuntu_release }}-pgdg main
+    state: present
+    filename: pgdg
+  notify:
+    - update caches
+
+- meta: flush_handlers
+
+- name: Install pgbarman packages
+  apt:
+    name: barman
+    state: present
+#    update_cache: yes
+
+- name: Generate ssh keys
+  user:
+    name: barman
+    generate_ssh_key: yes
+    state: present
+
+- name: Configure barman.conf
+  lineinfile:
+    path: /etc/barman.conf
+    regexp: "^{{ item.key }} .+$"
+    line: "{{ item.key }} = {{ item.value }}"
+  loop: "{{ query('dict', pgbarman_conf | default({})) }}"
+
+- name: Configure barman clients
+  blockinfile:
+    path: /etc/barman.d/{{ item.server }}.conf
+    marker: "; {mark} ANSIBLE MANAGED BLOCK"
+    create: yes
+    block: |
+      [{{ item.server }}]
+      description = "{{ item.description }}"
+      ssh_command = {{ item.ssh_command }}
+      conninfo = {{ item.conninfo }}
+      backup_method = {{ item.backup_method }}
+      retention_policy = {{ item.retention_policy }}
+      retention_policy_mode = {{ item.retention_policy_mode }}
+      wal_retention_policy = {{ item.wal_retention_policy }}
+      archiver = {{ item.archiver }}
+  loop: "{{ pgbarman_client_conf }}"
+
+#- pause:
+#    prompt: "Make sure primary db replication settings accepted. Restart primary db service if needed"
+#  when: pgbarman_init_standby
+
+#- import_tasks: init_standby.yml
+#  when: pgbarman_init_standby and pgbarman_standby_host == ansible_default_ipv4.address

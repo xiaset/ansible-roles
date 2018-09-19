@@ -1,0 +1,34 @@
+pgbarman_create_lv: False
+pgbarman_vg_name: shared
+pgbarman_lv_name: barman
+pgbarman_lv_size: 5G
+pgbarman_fstype: ext4
+pgbarman_mount_path: /var/lib/barman
+pgbarman_owner: root
+pgbarman_group: root
+pgbarman_mode: 0750
+#pgbarman_version: 9.6
+#pgbarman_data_dir: "{{ pgbarman_mount_path }}/{{ pgbarman_version }}/main"
+
+pgbarman_ubuntu_release: xenial
+pgbarman_packages:
+  - postgresql-{{ pgbarman_version }}
+
+pgbarman_repo_key_url: https://www.postgresql.org/media/keys/ACCC4CF8.asc
+pgbarman_repo_url: http://apt.postgresql.org/pub/repos/apt/
+
+pgbarman_conf:
+  configuration_files_directory: /etc/barman.d
+  barman_home: /var/lib/barman
+  barman_user: barman
+  log_file: /var/log/barman/barman.log
+  log_level: INFO
+  compression: gzip
+  reuse_backup: link
+  immediate_checkpoint: 'true'
+  basebackup_retry_times: 3
+  basebackup_retry_sleep: 30
+  last_backup_maximum_age: 1 DAYS
+
+pgbarman_client_conf:
+  - { server: 'example', description: 'Example configuration', ssh_command: 'ssh postgres@pg', conninfo: 'host=pg user=barman dbname=postgres', backup_method: 'rsync', retention_policy: 'REDUNDANCY 14', retention_policy_mode: 'auto', wal_retention_policy: 'main' }

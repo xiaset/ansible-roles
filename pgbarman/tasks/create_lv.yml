@@ -1,0 +1,32 @@
+---
+- name: Create logical volume
+  lvol:
+    vg: "{{ pgbarman_vg_name | default('shared') }}"
+    lv: "{{ pgbarman_lv_name }}"
+    size: "{{ pgbarman_lv_size }}"
+
+- name: mkfs
+  filesystem:
+    dev: /dev/{{ pgbarman_vg_name | default('shared') }}/{{ pgbarman_lv_name }}
+    fstype: "{{ pgbarman_fstype }}"
+
+- name: Create mountpoint
+  file:
+    path: "{{ pgbarman_mount_path }}"
+    state: directory
+
+- name: Mount logical volume
+  mount:
+    src: /dev/{{ pgbarman_vg_name | default('shared') }}/{{ pgbarman_lv_name }}
+    path: "{{ pgbarman_mount_path }}"
+    fstype: "{{ pgbarman_fstype }}"
+    opts: noatime
+    state: mounted
+
+#- name: Set mountpoint attributes
+#  file:
+#    path: "{{ pgbarman_mount_path }}"
+#    state: directory
+#    owner: "{{ pgbarman_owner }}"
+#    group: "{{ pgbarman_group }}"
+#    mode: "{{ pgbarman_mode }}"
