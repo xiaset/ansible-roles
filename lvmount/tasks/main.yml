@@ -1,34 +1,39 @@
 ---
 - name: Create logical volume
   lvol:
-    vg: "{{ lvmount.vg_name | default('shared') }}"
-    lv: "{{ lvmount.lv_name }}"
-    size: "{{ lvmount.lv_size }}"
+    vg: "{{ item.vg_name | default('shared') }}"
+    lv: "{{ item.lv_name }}"
+    size: "{{ item.lv_size }}"
   notify: mkfs
+  loop: "{{ lvmount }}"
 
 #- meta: flush_handlers
 - name: mkfs
   filesystem:
-    dev: /dev/{{ lvmount.vg_name | default('shared') }}/{{ lvmount.lv_name }}
-    fstype: "{{ lvmount.fstype }}"
+    dev: /dev/{{ item.vg_name | default('shared') }}/{{ item.lv_name }}
+    fstype: "{{ item.fstype }}"
+  loop: "{{ lvmount }}"
 
 - name: Create mountpoint
   file:
-    path: "{{ lvmount.mount_path }}"
+    path: "{{ item.mount_path }}"
     state: directory
+  loop: "{{ lvmount }}"
 
 - name: Mount logical volume
   mount:
-    src: /dev/{{ lvmount.vg_name | default('shared') }}/{{ lvmount.lv_name }}
-    path: "{{ lvmount.mount_path }}"
-    fstype: "{{ lvmount.fstype }}"
+    src: /dev/{{ item.vg_name | default('shared') }}/{{ item.lv_name }}
+    path: "{{ item.mount_path }}"
+    fstype: "{{ item.fstype }}"
     opts: noatime
     state: mounted
+  loop: "{{ lvmount }}"
 
 - name: Set mountpoint attributes
   file:
-    path: "{{ lvmount.mount_path }}"
+    path: "{{ item.mount_path }}"
     state: directory
-    owner: "{{ lvmount.owner }}"
-    group: "{{ lvmount.group }}"
-    mode: "{{ lvmount.mode }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ lvmount }}"
